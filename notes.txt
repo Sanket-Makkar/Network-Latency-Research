@@ -1,0 +1,28 @@
+Name: Sanket Makkar
+CaseID:         sxm1626
+File Name:      notes.txt
+Date Created:   12/4/2024
+Description:    This is a file to contains notes regarding the CSDS325 proj5 assignment
+
+1) You can access the data.txt file at: https://drive.google.com/file/d/1WKfBuJNdGk7xcmEp2DizT7EX7L6DPX9r/view?usp=sharing
+* note that this should be universally accessible given the link to anyone at CWRU
+* this is all the data I collected for this assignment
+
+2) To run data gathering for 2500 points you can execute: python3 datagathering.py
+* To change the number of data points you must manuall enter the python script and update its NUM_WEBSITES parameter to your desired number of hosts
+
+3) I analyze the data using a jupyter notebook named dataparsing.ipynb.
+To analyze the data, observing graphs and metrics, open dataparsing.ipynb.
+For the basic class definitions that analyze and parse data, after having run data gathering and generated a data.txt file, please run the first cell.
+To instantiate the data anlyzing class, and pass it the parsed data, please execute the next cell.
+To observe insight one's metrics and graph please execute the next cell.
+To observe insight two's metrics and graph please execute the next cell.
+To observe insight three's metrics and graph please execute the next cell.
+To observe insight four's metrics and graph please execute the next cell.
+To observe insight five's metrics and graph please execute the next cell.
+
+* Note that I utilize a few libraries in the jupyter notebook that are common but not installed with python by default - I believe these libraries are okay to use but the dependencies are just something to be aware of.
+* These libraries are numpy, and matplotlib
+* If you do not have these dependencies installed, please pip install each (pip install numpy) (pip install matplotlib)
+
+4) I have included tranco-20241115.csv in this tarball for the sake of allowing the script to function.

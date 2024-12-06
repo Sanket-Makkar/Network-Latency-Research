@@ -1,3 +1,11 @@
+"""
+Name: Sanket Makkar
+    CaseID:         sxm1626
+    File Name:      datagathering.py
+    Date Created:   11/29/2024
+    Description:    This is the data gathering file for projet 5 containing methods to parse through and 
+                    measure each host listed in the first 2500 websites in the tranco-20241115.csv file.
+"""
 import subprocess
 import csv
 import time
@@ -19,6 +27,7 @@ SECOND_TO_MINUTE = 60
 MINUTE_TO_HOUR = 60
 DEFAULT_DATA_POINTS_COLLECTED = 10
 COUNTER_INITIAL_VALUE = 0
+PING_SUMMARY_POSITION = -3
 
 class dataCollector:
     # just define a data collection class that, by default, asks for a csv file to work with
@@ -41,12 +50,12 @@ class dataCollector:
         strsInResult = result.split('\n')
         
         if len(strsInResult) >= PING_WORKING_LENGTH:
-            strsIpLine = strsInResult[0]
+            strsIpLine = strsInResult[COUNTER_INITIAL_VALUE]
             ipBeginning = strsIpLine.find("(") + OFF_BY_ONE_OFFSET
             ipEnd = strsIpLine[ipBeginning:].find(")") + ipBeginning
             pingIp = strsIpLine[ipBeginning : ipEnd]
             
-            pingTimingOut = strsInResult[-3]
+            pingTimingOut = strsInResult[PING_SUMMARY_POSITION]
             return (pingIp, pingTimingOut)
         else:
             return (FAILURE_MESSAGE, FAILURE_MESSAGE)
@@ -60,8 +69,8 @@ class dataCollector:
     # curl command to grab downloaded bytes info - used for one finding, and we really only need that variable
     def curl(self, host):
         dump = '/dev/null'
-        formattedTimes = '%{size_download}\n'
-        result = self.runSubproc(['curl', '-s', '-w', formattedTimes, '-o', dump, host])
+        formattedSize = '%{size_download}\n'
+        result = self.runSubproc(['curl', '-s', '-w', formattedSize, '-o', dump, host])
         return result
     
     # the main function to call from this class, orchestrates scale data collection
@@ -101,7 +110,7 @@ class dataCollector:
                 # and get the info we need from curl
                 curlRes = self.curl(host)
                 # and identify the country as a string
-                country = self.get_country_from_ip(ip)
+                country = self.getCountry(ip)
                 
                 # write to output
                 writeTo.write(
@@ -120,7 +129,7 @@ class dataCollector:
         writeTo.close()
 
     # helper to grab country of origin information for a host (ex: 'United States' would be for www.google.com)
-    def get_country_from_ip(self, ip):
+    def getCountry(self, ip):
         # We use a geolocation website that returns json formatted information - including country location
         conn = http.client.HTTPConnection("ip-api.com")
         conn.request("GET", f"/json/{ip}")
@@ -128,10 +137,10 @@ class dataCollector:
         
         # Just grab the relevant info if we can get it
         if response.status == RESPONSE_STATUS_OK:
-            data = json.loads(response.read())
-            return data.get("country", "Unknown")
+            dataReturned = json.loads(response.read())
+            return dataReturned.get("country", "Unknown")
         else:
-            return "Error: Unable to fetch data"
+            return "Error: N/A"
     
 # We try to time the whole interaction - this was more for me when trying to predict how long this would need to run
 first_time = int(time.time() * SECOND_TO_MS)
